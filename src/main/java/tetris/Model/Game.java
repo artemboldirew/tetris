@@ -10,15 +10,12 @@ public class Game {
 
     public void mainGame() throws InterruptedException {
         con.field.createNewFigure();
-        System.out.println("mainGame");
         while (isRunning) {
             if (con.field.canMoveDown()) {
-                System.out.println("if");
-                Thread.sleep(500);
+                Thread.sleep(400);
                 con.field.moveDown();
             }
             else {
-                System.out.println("else");
                 con.field.createNewFigure();
             }
         }

@@ -1,8 +1,6 @@
 package tetris.View;
 
-
 import tetris.Connector;
-import tetris.Model.Field;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -10,8 +8,10 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
-public class Frame extends JFrame{
+public class Frame extends JFrame {
     private JButton startButton;
     private JButton stopButton;
     private JTable table;
@@ -31,7 +31,7 @@ public class Frame extends JFrame{
 
         // Создаем таблицу
         Object[][] data = new Object[20][10];
-        DefaultTableModel model = new DefaultTableModel(data, new String[]{"","","","","","","","","",""});
+        DefaultTableModel model = new DefaultTableModel(data, new String[] {"", "", "", "", "", "", "", "", "", ""});
         table = new JTable(model);
         table.setRowHeight(20);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -47,10 +47,29 @@ public class Frame extends JFrame{
                 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
                 // Проверяем значение в ячейке
-                if (con.field.table[row][column] == 1) {
+                if (con.field.table[row][column] == 0) {
+                    c.setBackground(Color.WHITE);
+                }
+                else if (con.field.table[row][column] == 1) {
                     c.setBackground(Color.RED);
-                } else {
-                    c.setBackground(UIManager.getColor("Table.background"));
+                }
+                else if (con.field.table[row][column] == 2) {
+                    c.setBackground(Color.BLUE);
+                }
+                else if (con.field.table[row][column] == 3) {
+                    c.setBackground(Color.GREEN);
+                }
+                else if (con.field.table[row][column] == 4) {
+                    c.setBackground(Color.ORANGE);
+                }
+                else if (con.field.table[row][column] == 5) {
+                    c.setBackground(Color.BLACK);
+                }
+                else if (con.field.table[row][column] == -1) {
+                    c.setBackground(Color.GRAY);
+                }
+                else {
+                    c.setBackground(Color.MAGENTA);
                 }
 
                 return c;
@@ -74,15 +93,6 @@ public class Frame extends JFrame{
         add(topPanel, BorderLayout.NORTH); // Добавляем панель с кнопками в верхнюю часть
         add(tableScrollPane, BorderLayout.CENTER);
         //table.repaint();// Добавляем таблицу в центр
-        setVisible(true);
-
-    }
-
-    public void review() {
-        table.repaint();
-    }
-
-    public void buttonPushed() {
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -104,6 +114,55 @@ public class Frame extends JFrame{
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
+            }
+        });
+
+        // Добавление слушателя событий клавиатуры
+        addKeyBindings();
+
+        // Убедимся, что фрейм имеет фокус
+        this.requestFocusInWindow();
+
+        setVisible(true);
+    }
+
+
+    public void review() {
+        table.repaint();
+    }
+
+    private void addKeyBindings() {
+        // Получаем InputMap и ActionMap у корневого слоя (root pane)
+        InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionMap = getRootPane().getActionMap();
+
+        // Привязываем действие к клавише "Вправо"
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "moveRight");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "moveLeft");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_0, 0), "rapidFall");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "rotate");
+        actionMap.put("moveRight", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                con.field.moveRight(); // Предполагается, что в вашем классе есть метод moveRight()
+            }
+        });
+        actionMap.put("moveLeft", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                con.field.moveLeft(); // Предполагается, что в вашем классе есть метод moveRight()
+            }
+        });
+        actionMap.put("rapidFall", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                con.field.rapidFall(); // Предполагается, что в вашем классе есть метод moveRight()
+            }
+        });
+        actionMap.put("rotate", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                con.field.rotateFigure(); // Предполагается, что в вашем классе есть метод moveRight()
             }
         });
     }
