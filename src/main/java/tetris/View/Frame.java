@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 public class Frame extends JFrame {
     private JButton startButton;
     private JButton stopButton;
+    private JTextField scoreField;
     private JTable table;
     public Connector con;
 
@@ -24,8 +25,18 @@ public class Frame extends JFrame {
 
         // Создаем панель для размещения кнопок
         JPanel topPanel = new JPanel();
+        JPanel rightPanel = new JPanel();
+        JPanel emptyPanel = new JPanel();
         startButton = new JButton("Начать");
+        String scoreString = "Ваш счёт: " + con.game.score;
+        scoreField = new JTextField(scoreString);
+        scoreField.setEditable(false);
+        scoreField.setFocusable(false);
         stopButton = new JButton("Остановить");
+        startButton.setFocusable(false);
+        stopButton.setFocusable(false);
+        setFocusable(false);
+        topPanel.add(scoreField);
         topPanel.add(startButton);
         topPanel.add(stopButton);
 
@@ -33,6 +44,7 @@ public class Frame extends JFrame {
         Object[][] data = new Object[20][10];
         DefaultTableModel model = new DefaultTableModel(data, new String[] {"", "", "", "", "", "", "", "", "", ""});
         table = new JTable(model);
+        table.setFocusable(false);
         table.setRowHeight(20);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
@@ -90,6 +102,8 @@ public class Frame extends JFrame {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setSize(screenSize);
         setLocationRelativeTo(null);
+        add(emptyPanel, BorderLayout.SOUTH);
+        //add(rightPanel, BorderLayout.EAST);
         add(topPanel, BorderLayout.NORTH); // Добавляем панель с кнопками в верхнюю часть
         add(tableScrollPane, BorderLayout.CENTER);
         //table.repaint();// Добавляем таблицу в центр
@@ -117,12 +131,7 @@ public class Frame extends JFrame {
             }
         });
 
-        // Добавление слушателя событий клавиатуры
         addKeyBindings();
-
-        // Убедимся, что фрейм имеет фокус
-        this.requestFocusInWindow();
-
         setVisible(true);
     }
 
@@ -139,32 +148,36 @@ public class Frame extends JFrame {
         // Привязываем действие к клавише "Вправо"
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "moveRight");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "moveLeft");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_0, 0), "rapidFall");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "rapidFall");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "rotate");
         actionMap.put("moveRight", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                con.field.moveRight(); // Предполагается, что в вашем классе есть метод moveRight()
+                con.field.moveRight();
             }
         });
         actionMap.put("moveLeft", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                con.field.moveLeft(); // Предполагается, что в вашем классе есть метод moveRight()
+                con.field.moveLeft();
             }
         });
         actionMap.put("rapidFall", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                con.field.rapidFall(); // Предполагается, что в вашем классе есть метод moveRight()
+                con.field.rapidFall();
             }
         });
         actionMap.put("rotate", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                con.field.rotateFigure(); // Предполагается, что в вашем классе есть метод moveRight()
+                con.field.mainRotation();
             }
         });
+    }
+    public void setScore(int score) {
+        String scoreString = "Ваш счёт: " + con.game.score;
+        scoreField.setText(scoreString);
     }
 
 }

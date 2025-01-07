@@ -5,7 +5,7 @@ import tetris.Connector;
 public class Game {
     public Connector con;
     public boolean isRunning = true;
-    public int score;
+    public int score = 0;
 
 
     public void mainGame() throws InterruptedException {
