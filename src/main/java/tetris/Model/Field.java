@@ -66,7 +66,7 @@ public class Field {
             int[] curPoint = figure.get(i);
             int[] nextPoint = Arrays.copyOf(curPoint, curPoint.length);
             nextPoint[0]++;
-            if (curPoint[0] == 19 || (table[curPoint[0] + 1][curPoint[1]] > 0 && !containPoint(nextPoint, figure))) {
+            if (curPoint[0] == 19 || (table[curPoint[0] + 1][curPoint[1]] > 0 && !containPoint(nextPoint))) {
                 return false;
             }
         }
@@ -78,7 +78,7 @@ public class Field {
             int[] curPoint = figure.get(i);
             int[] nextPoint = Arrays.copyOf(curPoint, curPoint.length);
             nextPoint[0]++;
-            if (curPoint[0] == 19 || (table[curPoint[0] + 1][curPoint[1]] > 0 && !containPoint(nextPoint, figure))) {
+            if (curPoint[0] == 19 || (table[curPoint[0] + 1][curPoint[1]] > 0 && !containPoint(nextPoint))) {
                 return false;
             }
         }
@@ -90,9 +90,7 @@ public class Field {
             table[figure.get(i)[0]][figure.get(i)[1]] = 0;
             figure.get(i)[0]++;
         }
-        for (int i = 0; i < figure.size(); i++) {
-            table[figure.get(i)[0]][figure.get(i)[1]] = color;
-        }
+        drawFigure(figure, color);
         deleteRow();
         con.frame.review();
     }
@@ -102,7 +100,7 @@ public class Field {
             int[] curPoint = figure.get(i);
             int[] nextPoint = Arrays.copyOf(curPoint, curPoint.length);
             nextPoint[1]++;
-            if (curPoint[1] == 9 || (table[curPoint[0]][curPoint[1] + 1] != 0 && !containPoint(nextPoint, figure))) {
+            if (curPoint[1] == 9 || (table[curPoint[0]][curPoint[1] + 1] != 0 && !containPoint(nextPoint))) {
                 return false;
             }
         }
@@ -115,9 +113,7 @@ public class Field {
                 table[figure.get(i)[0]][figure.get(i)[1]] = 0;
                 figure.get(i)[1]++;
             }
-            for (int i = 0; i < figure.size(); i++) {
-                table[figure.get(i)[0]][figure.get(i)[1]] = color;
-            }
+            drawFigure(figure, color);
             showShadow(false);
             con.frame.review();
         }
@@ -128,7 +124,7 @@ public class Field {
             int[] curPoint = figure.get(i);
             int[] nextPoint = Arrays.copyOf(curPoint, curPoint.length);
             nextPoint[1]--;
-            if (curPoint[1] == 0 || (table[curPoint[0]][curPoint[1] - 1] != 0 && !containPoint(nextPoint, figure))) {
+            if (curPoint[1] == 0 || (table[curPoint[0]][curPoint[1] - 1] != 0 && !containPoint(nextPoint))) {
                 return false;
             }
         }
@@ -141,15 +137,13 @@ public class Field {
                 table[figure.get(i)[0]][figure.get(i)[1]] = 0;
                 figure.get(i)[1]--;
             }
-            for (int i = 0; i < figure.size(); i++) {
-                table[figure.get(i)[0]][figure.get(i)[1]] = color;
-            }
+            drawFigure(figure, color);
             showShadow(false);
             con.frame.review();
         }
     }
 
-    public boolean containPoint(int[] point, List<int[]> figure) {
+    public boolean containPoint(int[] point) {
         for (int i = 0; i < figure.size(); i++) {
             int[] d = figure.get(i);
             if (d[0] == point[0] && d[1] == point[1]) {
@@ -172,27 +166,21 @@ public class Field {
                 copyFigure.get(i)[0]++;
             }
         }
-        for (int j = 0; j < copyFigure.size(); j++) {
-            table[copyFigure.get(j)[0]][copyFigure.get(j)[1]] = -1;
-        }
+        drawFigure(copyFigure, -1);
         shadow = copyFigure;
     }
 
     private void cleanShadow(){
         for (int i = 0; i < shadow.size(); i++) {
-            if (!containPoint(shadow.get(i), figure)) {
+            if (!containPoint(shadow.get(i))) {
                 table[shadow.get(i)[0]][shadow.get(i)[1]] = 0;
             }
         }
     }
 
     public void rapidFall(){
-        for (int i = 0; i < figure.size(); i++) {
-            table[figure.get(i)[0]][figure.get(i)[1]] = 0;
-        }
-        for (int i = 0; i < shadow.size(); i++) {
-            table[shadow.get(i)[0]][shadow.get(i)[1]] = color;
-        }
+        drawFigure(figure, 0);
+        drawFigure(shadow, color);
         createNewFigure();
     }
 
@@ -209,21 +197,15 @@ public class Field {
             cur[0] = div;
             cur[0] = cur[0] + x;
             cur[1] = cur[1] + y;
-            if (cur[0] < 0 || cur[0] > 19 || cur[1] < 0 || cur[1] > 9 || (table[cur[0]][cur[1]] > 0 && !containPoint(cur, figure))) {
+            if (cur[0] < 0 || cur[0] > 19 || cur[1] < 0 || cur[1] > 9 || (table[cur[0]][cur[1]] > 0 && !containPoint(cur))) {
                 flag = false;
             }
             rotatedFigure.add(cur);
         }
         if (flag) {
-            for (int i = 0; i < figure.size(); i++) {
-                int[] cud = figure.get(i);
-                table[cud[0]][cud[1]] = 0;
-            }
+            drawFigure(figure, 0);
             figure = rotatedFigure;
-            for (int i = 0; i < figure.size(); i++) {
-                int[] cud = figure.get(i);
-                table[cud[0]][cud[1]] = color;
-            }
+            drawFigure(figure, color);
             showShadow(false);
             con.frame.review();
         }
@@ -233,7 +215,6 @@ public class Field {
         int x = figure.get(center)[0] - 2;
         int y = figure.get(center)[1] - 2;
         boolean flag = true;
-        int color = table[figure.get(0)[0]][figure.get(0)[1]];
         List<int[]> rotatedFigure = new ArrayList<>();
         for (int i = 0; i < figure.size(); i++) {
             int[] cur = figure.get(i).clone();
@@ -243,21 +224,15 @@ public class Field {
             cur[0] = div;
             cur[0] = cur[0] + x;
             cur[1] = cur[1] + y;
-            if (cur[0] < 0 || cur[0] > 19 || cur[1] < 0 || cur[1] > 9 || (table[cur[0]][cur[1]] > 0 && !containPoint(cur, figure))) {
+            if (cur[0] < 0 || cur[0] > 19 || cur[1] < 0 || cur[1] > 9 || (table[cur[0]][cur[1]] > 0 && !containPoint(cur))) {
                 flag = false;
             }
             rotatedFigure.add(cur);
         }
         if (flag) {
-            for (int i = 0; i < figure.size(); i++) {
-                int[] cud = figure.get(i);
-                table[cud[0]][cud[1]] = 0;
-            }
+            drawFigure(figure, 0);
             figure = rotatedFigure;
-            for (int i = 0; i < figure.size(); i++) {
-                int[] cud = figure.get(i);
-                table[cud[0]][cud[1]] = color;
-            }
+            drawFigure(figure, color);
             showShadow(false);
             con.frame.review();
         }
@@ -286,14 +261,10 @@ public class Field {
         }
         if (flag) {
             con.game.score++;
-            con.frame.setScore(con.game.score);
-            for (int i = 0; i < figure.size(); i++) {
-                table[figure.get(i)[0]][figure.get(i)[1]] = 0;
-            }
+            con.frame.setScore(true);
+            drawFigure(figure, 0);
             table = removeRows(table);
-            for (int i = 0; i < figure.size(); i++) {
-                table[figure.get(i)[0]][figure.get(i)[1]] = color;
-            }
+            drawFigure(figure, color);
             showShadow(false);
         }
     }
@@ -320,12 +291,22 @@ public class Field {
         return newMatrix;
     }
 
-
-
-    public void printFigure(List<int[]> figure){
-        for (int i = 0; i < figure.size(); i++) {
-            System.out.print(Arrays.toString(figure.get(i)) + " ");
+    public void cleanField() {
+        for (int i = 0; i < table.length; i++) {
+            for (int j = 0; j < table[0].length; j++) {
+                table[i][j] = 0;
+            }
         }
-        System.out.println();
+        figure = new ArrayList<>();
+        shadow = new ArrayList<>();
+        color = 0;
+        center = 2;
+        indexOfFigure = -1;
+    }
+
+    private void drawFigure(List<int[]> xy, int col) {
+        for (int i = 0; i < xy.size(); i++) {
+            table[xy.get(i)[0]][xy.get(i)[1]] = col;
+        }
     }
 }

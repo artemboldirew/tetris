@@ -5,9 +5,9 @@ import tetris.Model.Game;
 import tetris.View.Frame;
 
 import javax.swing.*;
-// сделай так чтобы действия не зависили от порядка точек
+
 public class Main {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             Field field = new Field();
             Frame frame = new Frame();
