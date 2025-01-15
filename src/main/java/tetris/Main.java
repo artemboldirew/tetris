@@ -1,8 +1,8 @@
 package tetris;
 
-import tetris.Model.Field;
-import tetris.Model.Game;
-import tetris.View.Frame;
+import tetris.model.Field;
+import tetris.model.Game;
+import tetris.view.Frame;
 
 import javax.swing.*;
 

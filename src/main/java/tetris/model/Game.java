@@ -1,7 +1,6 @@
-package tetris.Model;
+package tetris.model;
 
 import tetris.Connector;
-import tetris.Config.*;
 
 import static tetris.Config.speed;
 

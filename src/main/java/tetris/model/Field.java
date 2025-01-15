@@ -1,7 +1,7 @@
-package tetris.Model;
+package tetris.model;
 
 import tetris.Connector;
-import tetris.View.Frame;
+import tetris.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +20,16 @@ public class Field {
     int indexOfFigure = -1;
     Random random = new Random();
 
+    int[][] O = {{1, 4}, {0, 4}, {1, 5}, {0, 5}};
+    int[][] I = {{0, 3}, {0, 4}, {0, 5}, {0, 6}};
+    int[][] J = {{2, 4}, {2, 5}, {1, 5}, {0, 5}};
+    int[][] L = {{2, 4}, {1, 4}, {0, 4}, {2, 5}};
+    int[][] S = {{1, 4}, {1, 5}, {0, 5}, {0, 6}};
+    int[][] T = {{0, 4}, {1, 5}, {0, 5}, {0, 6}};
+    int[][] Z = {{0, 4}, {1, 5}, {0, 5}, {1, 6}};
+
+    int[][][] figures = {O, I, J, L, S, T, Z};
+
 
     public boolean canCreateFigure(int[][] arr) {
         for (int i = 0; i < arr.length; i++) {
@@ -35,18 +45,9 @@ public class Field {
         if (color == 0) {
             color++;
         }
-        int[][] O = {{1, 4}, {0, 4}, {1, 5}, {0, 5}};
-        int[][] I = {{0, 3}, {0, 4}, {0, 5}, {0, 6}};
-        int[][] J = {{2, 4}, {2, 5}, {1, 5}, {0, 5}};
-        int[][] L = {{2, 4}, {1, 4}, {0, 4}, {2, 5}};
-        int[][] S = {{1, 4}, {1, 5}, {0, 5}, {0, 6}};
-        int[][] T = {{0, 4}, {1, 5}, {0, 5}, {0, 6}};
-        int[][] Z = {{0, 4}, {1, 5}, {0, 5}, {1, 6}};
-
-        int[][][] figures = {O, I, J, L, S, T, Z};
         int index = random.nextInt(figures.length);
         indexOfFigure = index;
-        int[][] figureArr = figures[index];
+        int[][] figureArr = Utils.deepCopy(figures[index]);
         if (canCreateFigure(figureArr)) {
             figure = Arrays.asList(figureArr);
             for (int i = 0; i < figure.size(); i++) {
@@ -184,68 +185,6 @@ public class Field {
         createNewFigure();
     }
 
-    public void rotateFigure() {
-        int x = figure.get(center)[0] - 1;
-        int y = figure.get(center)[1] - 1;
-        boolean flag = true;
-        List<int[]> rotatedFigure = new ArrayList<>();
-        for (int i = 0; i < figure.size(); i++) {
-            int[] cur = figure.get(i).clone();
-            int div;
-            div = 3 - (cur[1] - y) - 1;
-            cur[1] = cur[0] - x;
-            cur[0] = div;
-            cur[0] = cur[0] + x;
-            cur[1] = cur[1] + y;
-            if (cur[0] < 0 || cur[0] > 19 || cur[1] < 0 || cur[1] > 9 || (table[cur[0]][cur[1]] > 0 && !containPoint(cur))) {
-                flag = false;
-            }
-            rotatedFigure.add(cur);
-        }
-        if (flag) {
-            drawFigure(figure, 0);
-            figure = rotatedFigure;
-            drawFigure(figure, color);
-            showShadow(false);
-            con.frame.review();
-        }
-    }
-
-    public void rotateI(){
-        int x = figure.get(center)[0] - 2;
-        int y = figure.get(center)[1] - 2;
-        boolean flag = true;
-        List<int[]> rotatedFigure = new ArrayList<>();
-        for (int i = 0; i < figure.size(); i++) {
-            int[] cur = figure.get(i).clone();
-            int div;
-            div = 5 - (cur[1] - y) - 1;
-            cur[1] = cur[0] - x;
-            cur[0] = div;
-            cur[0] = cur[0] + x;
-            cur[1] = cur[1] + y;
-            if (cur[0] < 0 || cur[0] > 19 || cur[1] < 0 || cur[1] > 9 || (table[cur[0]][cur[1]] > 0 && !containPoint(cur))) {
-                flag = false;
-            }
-            rotatedFigure.add(cur);
-        }
-        if (flag) {
-            drawFigure(figure, 0);
-            figure = rotatedFigure;
-            drawFigure(figure, color);
-            showShadow(false);
-            con.frame.review();
-        }
-    }
-
-    public void mainRotation() {
-        if (indexOfFigure == 1){
-            rotateI();
-        } else if (indexOfFigure > 1) {
-            rotateFigure();
-        }
-    }
-
     public void deleteRow() {
         boolean flag = false;
         for (int i = 0; i < table.length; i++) {
@@ -307,6 +246,41 @@ public class Field {
     private void drawFigure(List<int[]> xy, int col) {
         for (int i = 0; i < xy.size(); i++) {
             table[xy.get(i)[0]][xy.get(i)[1]] = col;
+        }
+    }
+
+    public void rotation() {
+        int firstParameter = 1;
+        int secondParameter = 3;
+        if (indexOfFigure == 1) {
+            firstParameter = 2;
+            secondParameter = 5;
+        } else if (indexOfFigure == 0) {
+            return;
+        }
+        int x = figure.get(center)[0] - firstParameter;
+        int y = figure.get(center)[1] - firstParameter;
+        boolean flag = true;
+        List<int[]> rotatedFigure = new ArrayList<>();
+        for (int i = 0; i < figure.size(); i++) {
+            int[] cur = figure.get(i).clone();
+            int div;
+            div = secondParameter - (cur[1] - y) - 1;
+            cur[1] = cur[0] - x;
+            cur[0] = div;
+            cur[0] = cur[0] + x;
+            cur[1] = cur[1] + y;
+            if (cur[0] < 0 || cur[0] > 19 || cur[1] < 0 || cur[1] > 9 || (table[cur[0]][cur[1]] > 0 && !containPoint(cur))) {
+                flag = false;
+            }
+            rotatedFigure.add(cur);
+        }
+        if (flag) {
+            drawFigure(figure, 0);
+            figure = rotatedFigure;
+            drawFigure(figure, color);
+            showShadow(false);
+            con.frame.review();
         }
     }
 }

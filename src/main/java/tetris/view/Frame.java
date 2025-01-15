@@ -1,4 +1,4 @@
-package tetris.View;
+package tetris.view;
 
 import tetris.Connector;
 
@@ -151,7 +151,7 @@ public class Frame extends JFrame {
         actionMap.put("rotate", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                con.field.mainRotation();
+                con.field.rotation();
             }
         });
         actionMap.put("start", new AbstractAction() {
