@@ -1,12 +1,6 @@
 package tetris.model;
 
 import tetris.Connector;
-import tetris.Utils;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 
 public class Field {
     public int[][] table = new int[20][10];
@@ -16,7 +10,7 @@ public class Field {
 
 
     int color = 0;
-    int center = 2;
+    final int center = 2;
 
 
     public boolean canCreateFigure(Figure fig) {
@@ -44,7 +38,6 @@ public class Field {
         else {
             con.game.isRunning = false;
         }
-        con.frame.review();
     }
 
     public boolean canMoveDown() {
@@ -78,7 +71,6 @@ public class Field {
         }
         drawFigure(color, true);
         deleteRow();
-        con.frame.review();
     }
 
     public boolean canMoveRight() {
@@ -101,7 +93,6 @@ public class Field {
             }
             drawFigure(color, true);
             showShadow(false);
-            con.frame.review();
         }
     }
 
@@ -125,7 +116,6 @@ public class Field {
             }
             drawFigure(color, true);
             showShadow(false);
-            con.frame.review();
         }
     }
 
@@ -221,7 +211,6 @@ public class Field {
         figure = null;
         shadow = null;
         color = 0;
-        center = 2;
     }
 
     private void drawFigure(int col, boolean isFigure) {
@@ -269,7 +258,6 @@ public class Field {
             figure = rotatedFigure;
             drawFigure(color, true);
             showShadow(false);
-            con.frame.review();
         }
     }
 }

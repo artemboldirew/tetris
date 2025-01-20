@@ -10,6 +10,8 @@ import java.util.Random;
 public class Figure implements Serializable {
     private List<Point> figure = new ArrayList<>();
     public int indexOfFigure = -1;
+    private int color = 0;
+    private
 
     Random random = new Random();
 
@@ -50,5 +52,9 @@ public class Figure implements Serializable {
 
     public List<Point> getFigure() {
         return figure;
+    }
+
+    public int getColor() {
+        return color;
     }
 }

@@ -13,13 +13,16 @@ public class Game {
     public void mainGame() throws InterruptedException {
         restartGame();
         con.field.createNewFigure();
+        con.frame.review();
         while (isRunning) {
             if (con.field.canMoveDown()) {
                 Thread.sleep(speed);
                 con.field.moveDown();
+                con.frame.review();
             }
             else {
                 con.field.createNewFigure();
+                con.frame.review();
             }
         }
         cleanGame();
@@ -33,7 +36,6 @@ public class Game {
 
     public void cleanGame() {
         con.field.cleanField();
-        isRunning = true;
         con.frame.review();
     }
 }

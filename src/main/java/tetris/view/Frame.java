@@ -133,25 +133,37 @@ public class Frame extends JFrame {
         actionMap.put("moveRight", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                con.field.moveRight();
+                if (con.game.isRunning) {
+                    con.field.moveRight();
+                    review();
+                }
             }
         });
         actionMap.put("moveLeft", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                con.field.moveLeft();
+                if (con.game.isRunning) {
+                    con.field.moveLeft();
+                    review();
+                }
             }
         });
         actionMap.put("rapidFall", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                con.field.rapidFall();
+                if (con.game.isRunning) {
+                    con.field.rapidFall();
+                    review();
+                }
             }
         });
         actionMap.put("rotate", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                con.field.rotation();
+                if (con.game.isRunning) {
+                    con.field.rotation();
+                    review();
+                }
             }
         });
         actionMap.put("start", new AbstractAction() {
