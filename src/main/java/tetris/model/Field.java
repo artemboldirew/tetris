@@ -5,7 +5,7 @@ import tetris.Connector;
 public class Field {
     public int[][] table = new int[20][10];
     public Figure figure;
-    public Shadow shadow;
+    public Figure shadow;
     public Connector con;
 
 
@@ -52,7 +52,7 @@ public class Field {
         return true;
     }
 
-    public boolean shadowCanMoveDown(Shadow shadowCopy) {
+    public boolean shadowCanMoveDown(Figure shadowCopy) {
         for (int i = 0; i < shadowCopy.getFigure().size(); i++) {
             Point curPoint = shadowCopy.getPoint(i);
             Point nextPoint = shadowCopy.getPoint(i).getCopy();
@@ -78,7 +78,7 @@ public class Field {
             Point curPoint = figure.getPoint(i);
             Point nextPoint = figure.getPoint(i).getCopy();
             nextPoint.setY(true);
-            if (curPoint.getY() == table[0].length || (table[curPoint.getX()][curPoint.getY() + 1] != 0 && !containPoint(nextPoint))) {
+            if (curPoint.getY() == table[0].length - 1 || (table[curPoint.getX()][curPoint.getY() + 1] != 0 && !containPoint(nextPoint))) {
                 return false;
             }
         }
@@ -133,7 +133,7 @@ public class Field {
         if (!isDown) {
             cleanShadow();
         }
-        Shadow shadowBeforeDown = new Shadow(figure);
+        Figure shadowBeforeDown = new Figure(figure);
         while (shadowCanMoveDown(shadowBeforeDown)) {
             for (int i = 0; i < shadowBeforeDown.getFigure().size(); i++) {
                 shadowBeforeDown.getPoint(i).setX();
@@ -159,6 +159,7 @@ public class Field {
 
     public void deleteRow() {
         boolean flag = false;
+        int cnt = 0;
         for (int i = 0; i < table.length; i++) {
             int amount = 0;
             for (int j = 0; j < table[0].length; j++) {
@@ -167,11 +168,12 @@ public class Field {
                 }
             }
             if (amount == 10) {
+                cnt++;
                 flag = true;
             }
         }
         if (flag) {
-            con.game.score++;
+            con.game.score += cnt;
             con.frame.setScore(true);
             drawFigure(0, true);
             table = removeRows(table);
@@ -249,7 +251,7 @@ public class Field {
             cur.setX(div);
             cur.setX(cur.getX() + x);
             cur.setY(cur.getY() + y);
-            if (cur.getX() < 0 || cur.getX() > table.length - 1 || cur.getY() < 0 || cur.getY() > table[0].length || (table[cur.getX()][cur.getY()] > 0 && !containPoint(cur))) {
+            if (cur.getX() < 0 || cur.getX() > table.length - 1 || cur.getY() < 0 || cur.getY() > table[0].length - 1 || (table[cur.getX()][cur.getY()] > 0 && !containPoint(cur))) {
                 flag = false;
             }
         }
